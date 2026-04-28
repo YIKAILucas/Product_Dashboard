@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>源网荷储开发工作台</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app-layout" class="layout">
+    <aside class="sidebar">
+      <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-label="收起侧边栏" aria-expanded="true">‹</button>
+      <div class="brand">
+        <p class="brand-kicker">Source Grid Load Storage</p>
+        <h1>源网荷储开发工作台</h1>
+      </div>
+      <section class="panel project-panel">
+        <h2>项目</h2>
+        <div id="project-tabs" class="button-group"></div>
+      </section>
+      <section class="panel page-tabs-panel">
+        <h2>页面切换</h2>
+        <div id="page-tabs" class="button-group"></div>
+      </section>
+      <section class="panel role-panel">
+        <h2>角色视图</h2>
+        <div id="role-tabs" class="button-group"></div>
+      </section>
+      <section class="panel page-nav-panel">
+        <h2>当前页目录</h2>
+        <nav id="in-page-nav" class="in-page-nav"></nav>
+      </section>
+      <section id="custom-editor-panel" class="panel hidden">
+        <h2>自定义视图</h2>
+        <p class="panel-hint">可按区块控制显示并调整顺序，设置将保存在本地浏览器。</p>
+        <div id="custom-editor"></div>
+      </section>
+    </aside>
+    <main class="content">
+      <header id="page-header" class="page-header"></header>
+      <section id="view-toolbar" class="view-toolbar" aria-label="视图筛选工具"></section>
+      <div id="main-sections" class="sections"></div>
+    </main>
+  </div>
+  <div id="image-viewer" class="image-viewer hidden" aria-hidden="true">
+    <div class="image-viewer-backdrop" data-action="close-image-viewer"></div>
+    <section class="image-viewer-dialog" role="dialog" aria-modal="true" aria-label="原型图放大预览">
+      <header class="image-viewer-toolbar">
+        <p id="image-viewer-title" class="image-viewer-title">原型图预览</p>
+        <div class="image-viewer-actions">
+          <button id="zoom-out-btn" class="viewer-btn" type="button">-</button>
+          <span id="image-scale" class="image-scale">100%</span>
+          <button id="zoom-in-btn" class="viewer-btn" type="button">+</button>
+          <a id="open-origin-link" class="viewer-link" target="_blank" rel="noreferrer">打开原图</a>
+          <button id="close-viewer-btn" class="viewer-btn" type="button" data-action="close-image-viewer">关闭</button>
+        </div>
+      </header>
+      <div id="image-viewer-canvas" class="image-viewer-canvas">
+        <img id="image-viewer-img" class="image-viewer-img" alt="原型图放大预览">
+      </div>
+    </section>
+  </div>
+  <div id="markdown-viewer" class="markdown-viewer hidden" aria-hidden="true">
+    <div class="markdown-viewer-backdrop" data-action="close-markdown-viewer"></div>
+    <section class="markdown-viewer-dialog" role="dialog" aria-modal="true" aria-label="完整 Markdown 预览">
+      <header class="markdown-viewer-toolbar">
+        <p id="markdown-viewer-title" class="markdown-viewer-title">完整 Markdown</p>
+        <button id="close-markdown-viewer-btn" class="viewer-btn" type="button" data-action="close-markdown-viewer">关闭</button>
+      </header>
+      <div class="markdown-viewer-body">
+        <pre id="markdown-viewer-content" class="markdown-viewer-content"></pre>
+      </div>
+    </section>
+  </div>
+  <script defer src="app.js"></script>
+</body>
+</html>
