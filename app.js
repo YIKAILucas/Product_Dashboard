@@ -19,7 +19,7 @@ const PAGE_STATUS_OPTIONS = {
 
 const SECTION_META = [
   { key: "focus", title: "当前角色关注重点", anchor: "focus" },
-  { key: "modules", title: "待开发页面模块 PRD", anchor: "modules" },
+  { key: "modules", title: "页面区域", anchor: "modules" },
   { key: "designs", title: "设计稿", anchor: "designs" },
   { key: "apis", title: "接口", anchor: "apis" },
   { key: "resources", title: "资源", anchor: "resources" },
@@ -31,7 +31,7 @@ const BASE_VIEW_LAYOUT = {
     focus: ["goals", "scope", "structure"],
     modules: ["header_module", "cards_module", "info_module"],
     designs: ["design_main"],
-    apis: [],
+    apis: ["api_template"],
     resources: [],
     details: ["rules", "acceptance", "risks", "states"],
   },
@@ -39,7 +39,7 @@ const BASE_VIEW_LAYOUT = {
     focus: ["structure", "goals"],
     modules: ["header_module", "cards_module", "info_module"],
     designs: ["design_main", "design_cards", "design_info"],
-    apis: [],
+    apis: ["api_template"],
     resources: [],
     details: ["states", "fields", "rules", "acceptance"],
   },
@@ -71,7 +71,7 @@ const BASE_VIEW_LAYOUT = {
     focus: ["flow", "structure"],
     modules: ["header_module", "cards_module", "info_module"],
     designs: [],
-    apis: [],
+    apis: ["api_template"],
     resources: ["mock_data"],
     details: ["rules", "states", "acceptance", "fields"],
   },
@@ -79,7 +79,7 @@ const BASE_VIEW_LAYOUT = {
     focus: ["goals", "structure"],
     modules: ["header_module", "cards_module"],
     designs: ["design_main"],
-    apis: [],
+    apis: ["api_template"],
     resources: [],
     details: ["acceptance", "risks"],
   },
@@ -432,7 +432,7 @@ function createPlaceholderPage({
         ],
         items: [
           `${name}当前为占位页面。`,
-          "后续需要补充页面流程、模块 PRD、字段定义、接口、Mock 数据、验收标准和风险依赖。",
+          "后续需要补充页面流程、页面区域、字段定义、接口、Mock 数据、验收标准和风险依赖。",
         ],
       },
       goals: {
@@ -454,7 +454,7 @@ function createPlaceholderPage({
         kind: "focus",
         title: "页面结构",
         status: "missing",
-        items: ["待补充：页面主要区域、模块层级和信息架构。"],
+        items: ["待补充：页面主要区域、区域层级和信息架构。"],
       },
       flow: {
         id: "flow",
@@ -466,8 +466,8 @@ function createPlaceholderPage({
       header_module: {
         id: "header_module",
         kind: "module",
-        title: "A. Header 模块",
-        description: `占位模块，后续定义${name}标题、上下文信息和关键操作。`,
+        title: "A. Header 区域",
+        description: `占位区域，后续定义${name}标题、上下文信息和关键操作。`,
         status: "missing",
         items: ["待补充：Header 展示内容和操作入口。"],
       },
@@ -477,7 +477,7 @@ function createPlaceholderPage({
         title: moduleBTitle,
         description: moduleBDescription,
         status: "missing",
-        items: ["待补充：模块内容、控件、输入输出和用户动作。"],
+        items: ["待补充：区域内容、控件、输入输出和用户动作。"],
       },
       info_module: {
         id: "info_module",
@@ -485,7 +485,7 @@ function createPlaceholderPage({
         title: moduleCTitle,
         description: moduleCDescription,
         status: "missing",
-        items: ["待补充：模块内容、结果展示和后续动作。"],
+        items: ["待补充：区域内容、结果展示和后续动作。"],
       },
       design_main: {
         id: "design_main",
@@ -497,9 +497,9 @@ function createPlaceholderPage({
       design_cards: {
         id: "design_cards",
         kind: "design",
-        title: "核心模块原型图",
+        title: "核心区域原型图",
         status: "missing",
-        caption: `${name}核心模块原型图待补充。`,
+        caption: `${name}核心区域原型图待补充。`,
       },
       design_info: {
         id: "design_info",
@@ -647,90 +647,135 @@ const pages = [
       header_module: {
         id: "header_module",
         kind: "module",
-        title: "A. Header 概览模块",
-        description: "首屏三栏指标区，优先强调“规模-经济性-绿色价值”。",
+        title: "A. Header 概览区域",
+        description: "首屏固定为 3 个概览分组。开发重点是把指标按分组稳定渲染，并确保单位、空值和分量明细清楚。",
+        interactionItems: [
+          "本区域首期不要求点击跳转。",
+          "加载中时三栏保持骨架结构，避免页面高度跳动。",
+          "部分指标缺失时，只影响对应指标，不隐藏整栏。",
+          "首屏可以明确看到 3 个分组：规模、经济性、绿色价值。",
+          "总装机量、IRR、LCOE、年碳减排量都有明确单位。",
+          "分量指标不会和主指标混在一起，层级清楚。",
+          "空值、0 值和异常值都有可读兜底。",
+        ],
         prdDetailed: [
           {
-            title: "模块目标",
+            title: "区域目标",
             items: [
-              "让用户在进入工作区后快速理解项目组合的规模、经济性和绿色价值。",
+              "用户进入工作区后，第一眼能判断当前项目组合的规模、收益水平和绿色价值。",
+              "Header 只做概览，不承载列表筛选、项目详情或规划动作。",
             ],
           },
           {
-            title: "用户故事",
+            title: "布局结构",
             items: [
-              "作为项目管理者，我希望首屏看到核心概览，快速判断当前项目组合是否健康。",
+              "三栏横向排列：资产组合规模、经济性表现、绿色价值。",
+              "每栏必须有主标题、1 个主指标、若干辅助指标。",
+              "主指标数字要比辅助指标更醒目，单位紧跟数值展示。",
             ],
           },
           {
-            title: "功能边界",
+            title: "字段与展示规则",
             items: [
-              "展示规模、经济性、绿色价值三类概览信息。",
-              "不在 Header 内承载项目列表、筛选器或规划流程。",
+              "资产组合规模：展示总装机量，并展示光伏、风电、储能、氢氨醇分量。",
+              "经济性表现：展示加权平均 IRR、平均 LCOE。",
+              "绿色价值：展示年碳减排量、绿电比例、绿证量。",
+              "所有数值字段必须显示单位；字段为空时展示“待补充”，不要展示 undefined/null。",
             ],
           },
           {
-            title: "主流程",
+            title: "交互与状态",
             items: [
-              "进入工作区 -> 查看 Header 概览 -> 判断是否继续查看项目卡片。",
+              "本区域首期不要求点击跳转。",
+              "加载中时三栏保持骨架结构，避免页面高度跳动。",
+              "部分指标缺失时，只影响对应指标，不隐藏整栏。",
             ],
           },
           {
             title: "关键验收点",
             items: [
-              "用户能在首屏识别规模、经济性和绿色价值三类重点信息。",
+              "首屏可以明确看到 3 个分组：规模、经济性、绿色价值。",
+              "总装机量、IRR、LCOE、年碳减排量都有明确单位。",
+              "分量指标不会和主指标混在一起，层级清楚。",
+              "空值、0 值和异常值都有可读兜底。",
             ],
           },
         ],
         items: [
-          "资产组合规模：总装机量 + 光伏/风电/储能/氢氨醇分量。",
-          "经济性表现：加权平均 IRR、平均 LCOE。",
-          "绿色价值：年碳减排量、绿电比例、绿证量。",
+          "区域目标：首屏展示项目组合的规模、收益和绿色价值，帮助用户快速判断项目盘面。",
+          "布局要求：固定 3 栏，分别是资产组合规模、经济性表现、绿色价值。",
+          "资产组合规模：主指标是总装机量；辅助指标是光伏、风电、储能、氢氨醇分量。",
+          "经济性表现：展示加权平均 IRR 和平均 LCOE，必须带单位或口径。",
+          "绿色价值：展示年碳减排量、绿电比例、绿证量，缺失值显示“待补充”。",
+          "开发验收：所有指标必须有数值、单位、空值兜底和清晰层级。",
         ],
       },
       cards_module: {
         id: "cards_module",
         kind: "module",
-        title: "B. 电站卡片区模块",
-        description: "项目级卡片，承载状态、规模、收益和协作入口。",
+        title: "B. 电站卡片区区域",
+        description: "项目列表以卡片呈现。开发重点是让每张卡片的信息结构一致，用户能快速比较项目并进入规划动作。",
+        interactionItems: [
+          "用户浏览卡片 -> 对比状态和收益指标 -> 点击“规划电站”。",
+          "点击“规划电站”进入电站规划页，首期只需要提供入口，不在当前卡片展开规划表单。",
+          "卡片本身不承载审批流、完整详情页和复杂筛选。",
+          "每张卡片都能看到地址、状态、项目名称、设备容量、三项指标、参与人和规划按钮。",
+          "多张卡片并排展示时，指标顺序和按钮位置保持一致。",
+          "已发布和规划中两种状态有明显视觉区分。",
+          "字段缺失时卡片结构不变，显示兜底文案。",
+        ],
         prdDetailed: [
           {
-            title: "模块目标",
+            title: "区域目标",
             items: [
-              "以项目卡片承载电站项目概览，帮助用户比较项目并进入规划动作。",
+              "用统一卡片承载每个电站项目的状态、位置、规模、收益和协作入口。",
+              "让用户可以横向比较多个项目，并快速进入“规划电站”。",
             ],
           },
           {
-            title: "用户故事",
+            title: "卡片信息结构",
             items: [
-              "作为方案设计人员，我希望快速比较多个项目的状态、收益和参与人。",
+              "顶部区域：项目地址在左侧，状态标签在右上角。",
+              "主体区域：项目名称作为主标题，子系统装机量 icon 作为项目构成说明。",
+              "指标区域：固定展示 IRR、LCOE、投资回收周期三类核心指标。",
+              "底部区域：展示参与人信息，并提供“规划电站”按钮。",
             ],
           },
           {
-            title: "功能边界",
+            title: "字段与展示规则",
             items: [
-              "展示项目级核心信息和“规划电站”入口。",
-              "不在卡片内展开完整项目详情或审批流程。",
+              "项目地址为空时展示“地址待补充”。",
+              "状态标签只允许已发布、规划中；后续新增状态需要同步测试用例。",
+              "子系统装机量 icon 需要展示设备类型和容量，不允许只展示图标。",
+              "IRR、LCOE、投资回收周期必须保持固定顺序，方便跨卡片比较。",
+              "参与人为空时展示“参与人待补充”。",
             ],
           },
           {
-            title: "主流程",
+            title: "交互与边界",
             items: [
-              "浏览项目卡片 -> 比较核心指标 -> 点击规划电站进入后续流程。",
+              "用户浏览卡片 -> 对比状态和收益指标 -> 点击“规划电站”。",
+              "点击“规划电站”进入电站规划页，首期只需要提供入口，不在当前卡片展开规划表单。",
+              "卡片本身不承载审批流、完整详情页和复杂筛选。",
             ],
           },
           {
             title: "关键验收点",
             items: [
-              "项目地址、状态、名称、指标、参与人和规划按钮均可见。",
+              "每张卡片都能看到地址、状态、项目名称、设备容量、三项指标、参与人和规划按钮。",
+              "多张卡片并排展示时，指标顺序和按钮位置保持一致。",
+              "已发布和规划中两种状态有明显视觉区分。",
+              "字段缺失时卡片结构不变，显示兜底文案。",
             ],
           },
         ],
         items: [
-          "项目地址 + 右上角状态标签（已发布 / 规划中）。",
-          "项目名称 + 子系统装机量 icon。",
-          "指标：IRR、LCOE、投资回收周期。",
-          "参与人信息 + “规划电站”按钮。",
+          "区域目标：用统一卡片展示电站项目，支持用户比较项目并进入规划。",
+          "顶部信息：左侧展示项目地址，右上角展示状态标签；状态范围是已发布、规划中。",
+          "主体信息：项目名称作为主标题；子系统装机量用 icon + 容量文字展示。",
+          "指标信息：固定展示 IRR、LCOE、投资回收周期，顺序不能随数据变化。",
+          "底部动作：展示参与人信息，并提供“规划电站”按钮跳转到电站规划页。",
+          "开发验收：字段缺失要有兜底，卡片高度和指标顺序要保持稳定。",
         ],
       },
       design_main: {
@@ -1144,11 +1189,11 @@ const pages = [
       header_module: {
         id: "header_module",
         kind: "module",
-        title: "A. Header 模块",
+        title: "A. Header 区域",
         description: "用于搜索与定位探索主题。",
         prdDetailed: [
           {
-            title: "模块目标",
+            title: "区域目标",
             items: [
               "说明探索页用于展示标杆项目并供给模板，同时提供项目搜索入口。",
             ],
@@ -1188,11 +1233,11 @@ const pages = [
       cards_module: {
         id: "cards_module",
         kind: "module",
-        title: "B. 案例卡片区模块",
+        title: "B. 案例卡片区区域",
         description: "标杆项目案例卡片，聚合案例信息与引用动作。",
         prdDetailed: [
           {
-            title: "模块目标",
+            title: "区域目标",
             items: [
               "展示标杆项目案例，帮助用户判断案例价值并供给可复用模板。",
             ],
@@ -1240,11 +1285,11 @@ const pages = [
       info_module: {
         id: "info_module",
         kind: "module",
-        title: "C. 信息区模块",
+        title: "C. 信息区区域",
         description: "补充外部情报，支持方案讨论。",
         prdDetailed: [
           {
-            title: "模块目标",
+            title: "区域目标",
             items: [
               "补充全球战略情报和市场趋势，帮助用户理解标杆项目的外部环境。",
             ],
@@ -1692,10 +1737,10 @@ const pages = [
     name: "电站规划页",
     position: 3,
     subtitle: "电站方案规划与参数配置",
-    moduleBTitle: "B. 规划配置模块",
-    moduleBDescription: "占位模块，后续定义规划参数、设备配置和约束条件。",
-    moduleCTitle: "C. 规划结果模块",
-    moduleCDescription: "占位模块，后续定义算法结果、方案指标和对比能力。",
+    moduleBTitle: "B. 规划配置区域",
+    moduleBDescription: "占位区域，后续定义规划参数、设备配置和约束条件。",
+    moduleCTitle: "C. 规划结果区域",
+    moduleCDescription: "占位区域，后续定义算法结果、方案指标和对比能力。",
     endpoints: [
       {
         method: "POST",
@@ -1737,10 +1782,10 @@ const pages = [
     name: "电站运行动画页",
     position: 4,
     subtitle: "电站运行过程动画与调度过程展示",
-    moduleBTitle: "B. 运行动画模块",
-    moduleBDescription: "占位模块，后续定义电站运行、能量流和调度动作的动画展示。",
-    moduleCTitle: "C. 调度说明模块",
-    moduleCDescription: "占位模块，后续定义算法判断、动作反馈和运行说明。",
+    moduleBTitle: "B. 运行动画区域",
+    moduleBDescription: "占位区域，后续定义电站运行、能量流和调度动作的动画展示。",
+    moduleCTitle: "C. 调度说明区域",
+    moduleCDescription: "占位区域，后续定义算法判断、动作反馈和运行说明。",
     endpointMethod: "GET",
     endpointPath: "/api/station-operation/animation",
     endpointName: "获取运行动画数据",
@@ -1756,10 +1801,10 @@ const pages = [
     name: "电站运行结果页",
     position: 5,
     subtitle: "电站运行结果、曲线与关键指标展示",
-    moduleBTitle: "B. 运行指标模块",
-    moduleBDescription: "占位模块，后续定义发电、负荷、储能、并网和调度指标展示。",
-    moduleCTitle: "C. 曲线与明细模块",
-    moduleCDescription: "占位模块，后续定义运行曲线、表格明细和异常说明。",
+    moduleBTitle: "B. 运行指标区域",
+    moduleBDescription: "占位区域，后续定义发电、负荷、储能、并网和调度指标展示。",
+    moduleCTitle: "C. 曲线与明细区域",
+    moduleCDescription: "占位区域，后续定义运行曲线、表格明细和异常说明。",
     endpointMethod: "GET",
     endpointPath: "/api/station-operation/results",
     endpointName: "获取运行结果",
@@ -1775,10 +1820,10 @@ const pages = [
     name: "电站财务结果页",
     position: 6,
     subtitle: "电站财务测算结果与收益指标展示",
-    moduleBTitle: "B. 财务指标模块",
-    moduleBDescription: "占位模块，后续定义 IRR、LCOE、投资回收期、现金流等财务指标。",
-    moduleCTitle: "C. 财务明细模块",
-    moduleCDescription: "占位模块，后续定义现金流、成本收益拆分和敏感性分析。",
+    moduleBTitle: "B. 财务指标区域",
+    moduleBDescription: "占位区域，后续定义 IRR、LCOE、投资回收期、现金流等财务指标。",
+    moduleCTitle: "C. 财务明细区域",
+    moduleCDescription: "占位区域，后续定义现金流、成本收益拆分和敏感性分析。",
     endpointMethod: "GET",
     endpointPath: "/api/station-finance/results",
     endpointName: "获取财务结果",
@@ -1794,10 +1839,10 @@ const pages = [
     name: "数据集页",
     position: 7,
     subtitle: "数据集管理、预览、生成与引用",
-    moduleBTitle: "B. 数据集列表模块",
-    moduleBDescription: "占位模块，后续定义数据集列表、筛选、预览和引用动作。",
-    moduleCTitle: "C. 数据集预览模块",
-    moduleCDescription: "占位模块，后续定义表格预览、曲线预览和数据质量说明。",
+    moduleBTitle: "B. 数据集列表区域",
+    moduleBDescription: "占位区域，后续定义数据集列表、筛选、预览和引用动作。",
+    moduleCTitle: "C. 数据集预览区域",
+    moduleCDescription: "占位区域，后续定义表格预览、曲线预览和数据质量说明。",
     endpointMethod: "GET",
     endpointPath: "/api/datasets",
     endpointName: "获取数据集列表",
@@ -1907,7 +1952,7 @@ const PROJECT_OVERVIEW = {
       id: "quality",
       title: "质量与验收",
       items: [
-        "页面级验收：摘要、模块、设计稿、接口、资源、详情区可完整浏览。",
+        "页面级验收：摘要、页面区域、设计稿、接口、资源、详情区可完整浏览。",
         "数据级验收：字段单位、枚举、空值、异常值和导出内容正确。",
         "交互验收：搜索、筛选、图片预览、Markdown 弹窗、字段导出、iframe 兜底可用。",
       ],
@@ -1919,6 +1964,26 @@ const PROJECT_OVERVIEW = {
         "Apifox / Swagger 可能禁止 iframe 嵌入，需要保留外部打开。",
         "mock 数据和接口字段可能不一致，需要以字段定义表作为对齐基准。",
         "指标口径、单位和枚举变化会影响前端展示、测试用例和接口契约。",
+      ],
+    },
+  ],
+};
+
+const TECH_INFO = {
+  id: "tech-info",
+  name: "技术信息",
+  subtitle: "项目环境、服务连接与联调配置",
+  chips: ["项目级", "技术配置", "敏感信息"],
+  sections: [
+    {
+      id: "mysql-service",
+      title: "MySQL 服务配置",
+      description: "当前用于联调和数据服务连接的 MySQL 配置。该信息包含账号密码，不应暴露到公开环境。",
+      rows: [
+        { label: "MYSQL_SERVICE_HOST", value: "172.22.3.128" },
+        { label: "MYSQL_SERVICE_DB_NAME", value: "sgls" },
+        { label: "MYSQL_SERVICE_USER", value: "czywhcdbuser" },
+        { label: "MYSQL_SERVICE_PASSWORD", value: "g6427fgUs#G", sensitive: true },
       ],
     },
   ],
@@ -2351,23 +2416,11 @@ function renderApiCard(block, title, badge) {
 }
 
 function renderModulePrdCard(block, title, description, badge) {
-  const concise = renderList(block.items);
-  const detailed = Array.isArray(block.prdDetailed)
-    ? `
-      <div class="module-prd-sections">
-        ${block.prdDetailed
-          .map(
-            (section) => `
-              <section class="module-prd-section">
-                <h4>${escapeHtml(section.title)}</h4>
-                ${renderList(section.items)}
-              </section>
-            `
-          )
-          .join("")}
-      </div>
-    `
-    : "";
+  const pageContent = renderList(block.contentItems ?? block.items);
+  const interactionItems = getInteractionItems(block);
+  const interactionLogic = interactionItems.length
+    ? renderList(interactionItems)
+    : '<p class="card-description">暂无交互逻辑，后续补充用户动作、状态流转和验收规则。</p>';
 
   return `
     <article class="card module-prd-card">
@@ -2378,18 +2431,29 @@ function renderModulePrdCard(block, title, description, badge) {
         </div>
         ${badge}
       </header>
-      <div class="module-prd-switch" role="group" aria-label="PRD 版本切换">
-        <button type="button" class="module-prd-toggle active" data-action="switch-prd" data-target="concise">简洁版</button>
-        <button type="button" class="module-prd-toggle" data-action="switch-prd" data-target="detailed">详细版</button>
+      <div class="module-prd-switch" role="group" aria-label="页面区域内容切换">
+        <button type="button" class="module-prd-toggle active" data-action="switch-prd" data-target="content">页面内容</button>
+        <button type="button" class="module-prd-toggle" data-action="switch-prd" data-target="interaction">交互逻辑</button>
       </div>
-      <div class="module-prd-pane" data-prd-pane="concise">
-        ${concise}
+      <div class="module-prd-pane" data-prd-pane="content">
+        ${pageContent}
       </div>
-      <div class="module-prd-pane hidden" data-prd-pane="detailed">
-        ${detailed || '<p class="card-description">暂无详细版 PRD。</p>'}
+      <div class="module-prd-pane hidden" data-prd-pane="interaction">
+        ${interactionLogic}
       </div>
     </article>
   `;
+}
+
+function getInteractionItems(block) {
+  if (Array.isArray(block.interactionItems)) {
+    return block.interactionItems;
+  }
+  if (!Array.isArray(block.prdDetailed)) {
+    return [];
+  }
+  const interactionSections = block.prdDetailed.filter((section) => /流程|交互|状态|验收|边界/.test(section.title));
+  return interactionSections.flatMap((section) => section.items ?? []);
 }
 
 function renderFieldTable(block, tableId) {
@@ -2566,16 +2630,41 @@ function getVisibleSections(page, view) {
 
 function renderProjectTab() {
   projectTabsEl.innerHTML = `
-    <button class="tab-btn ${state.surface === "project" ? "active" : ""}" data-action="open-project-overview" type="button">
-      ${escapeHtml(PROJECT_OVERVIEW.name)}
+    <button class="tab-btn project-entry-card ${state.surface === "project" ? "active" : ""}" data-action="open-project-overview" type="button">
+      <span class="project-entry-icon" aria-hidden="true">◎</span>
+      <span class="project-entry-body">
+        <span class="project-entry-title">
+          <span>${escapeHtml(PROJECT_OVERVIEW.name)}</span>
+          <span class="project-entry-badge">项目级</span>
+        </span>
+        <span class="project-entry-desc">范围、流程、交付关注点</span>
+      </span>
+    </button>
+    <button class="tab-btn project-entry-card ${state.surface === "tech" ? "active" : ""}" data-action="open-tech-info" type="button">
+      <span class="project-entry-icon db" aria-hidden="true">DB</span>
+      <span class="project-entry-body">
+        <span class="project-entry-title">
+          <span>${escapeHtml(TECH_INFO.name)}</span>
+          <span class="project-entry-badge warning">敏感</span>
+        </span>
+        <span class="project-entry-desc">环境、服务、联调配置</span>
+      </span>
     </button>
   `;
 
-  projectTabsEl.querySelector("button")?.addEventListener("click", () => {
+  projectTabsEl.querySelector('button[data-action="open-project-overview"]')?.addEventListener("click", () => {
     if (state.surface === "project") {
       return;
     }
     state.surface = "project";
+    render();
+  });
+
+  projectTabsEl.querySelector('button[data-action="open-tech-info"]')?.addEventListener("click", () => {
+    if (state.surface === "tech") {
+      return;
+    }
+    state.surface = "tech";
     render();
   });
 }
@@ -2629,7 +2718,7 @@ function getPageStatus(page) {
 }
 
 function getPageModuleLabel(page) {
-  return Number.isFinite(page.modules_count) ? `${page.modules_count} 个模块` : "模块待补充";
+  return Number.isFinite(page.modules_count) ? `${page.modules_count} 个区域` : "区域待补充";
 }
 
 function getPageApiLabel(page) {
@@ -2911,7 +3000,7 @@ function renderHeader(page) {
     </div>
     <div class="meta-chips">
       <span class="chip primary">角色：${escapeHtml(getRoleLabel(state.roleId))}</span>
-      <span class="chip">模块数：${escapeHtml(page.modules_count)}</span>
+      <span class="chip">区域数：${escapeHtml(page.modules_count)}</span>
       <span class="chip">接口关注度：${escapeHtml(page.api_focus)}</span>
       <span class="chip">风险项：${escapeHtml(page.risks_count)}</span>
       <span class="chip">交付块：${escapeHtml(stats.ready)}/${escapeHtml(stats.total)} 已配置</span>
@@ -3034,6 +3123,51 @@ function renderProjectOverview() {
         </section>
       `;
     })
+    .join("");
+}
+
+function renderTechInfo() {
+  fieldTableRegistry.clear();
+  rolePanelEl.classList.remove("hidden");
+  customEditorPanelEl.classList.add("hidden");
+  customEditorEl.innerHTML = "";
+  viewToolbarEl.classList.add("hidden");
+
+  pageHeaderEl.innerHTML = `
+    <div class="page-title-wrap">
+      <h2>${escapeHtml(TECH_INFO.name)}</h2>
+      <p>${escapeHtml(TECH_INFO.subtitle)}</p>
+    </div>
+    <div class="meta-chips">
+      ${TECH_INFO.chips.map((chip, index) => `<span class="chip ${index === 0 ? "primary" : ""}">${escapeHtml(chip)}</span>`).join("")}
+    </div>
+  `;
+
+  inPageNavEl.innerHTML = TECH_INFO.sections
+    .map((section, index) => `<a href="#${escapeHtml(section.id)}"><span class="nav-index">${String(index + 1).padStart(2, "0")}</span><span>${escapeHtml(section.title)}</span></a>`)
+    .join("");
+
+  mainSectionsEl.innerHTML = TECH_INFO.sections
+    .map(
+      (section) => `
+        <section id="${escapeHtml(section.id)}" class="section-block">
+          <h2 class="section-title">${escapeHtml(section.title)}</h2>
+          <p class="section-lead">${escapeHtml(section.description)}</p>
+          <div class="tech-config-card">
+            ${section.rows
+              .map(
+                (row) => `
+                  <div class="tech-config-row ${row.sensitive ? "sensitive" : ""}">
+                    <span class="tech-config-key">${escapeHtml(row.label)}</span>
+                    <code class="tech-config-value">${escapeHtml(row.value)}</code>
+                  </div>
+                `
+              )
+              .join("")}
+          </div>
+        </section>
+      `
+    )
     .join("");
 }
 
@@ -3358,6 +3492,11 @@ function render() {
 
   if (state.surface === "project") {
     renderProjectOverview();
+    return;
+  }
+
+  if (state.surface === "tech") {
+    renderTechInfo();
     return;
   }
 
