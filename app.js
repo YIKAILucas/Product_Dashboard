@@ -1993,8 +1993,6 @@ const state = {
   surface: "project",
   pageId: pages[0].id,
   roleId: "full",
-  query: "",
-  statusFilter: "all",
   customViews: loadCustomViews(),
 };
 
@@ -2594,8 +2592,7 @@ function renderDetail(block, tableId) {
 }
 
 function renderSection(page, view, section) {
-  const sourceBlockIds = Array.isArray(view[section.key]) ? view[section.key] : [];
-  const blockIds = getFilteredBlockIds(page, sourceBlockIds, section.key);
+  const blockIds = Array.isArray(view[section.key]) ? view[section.key] : [];
   if (blockIds.length === 0) {
     return "";
   }
@@ -2624,7 +2621,7 @@ function renderSection(page, view, section) {
 function getVisibleSections(page, view) {
   return SECTION_META.filter((section) => {
     const blockIds = Array.isArray(view[section.key]) ? view[section.key] : [];
-    return getFilteredBlockIds(page, blockIds, section.key).length > 0;
+    return blockIds.length > 0;
   });
 }
 
@@ -2829,48 +2826,6 @@ function getDeliveryStats(page, view) {
   };
 }
 
-function getBlockSearchText(block) {
-  return [
-    block.title,
-    block.description,
-    block.caption,
-    block.source,
-    block.markdown,
-    ...(Array.isArray(block.items) ? block.items : []),
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-}
-
-function blockMatchesFilters(block) {
-  if (state.statusFilter === "ready" && block.status === "missing") {
-    return false;
-  }
-  if (state.statusFilter === "missing" && block.status !== "missing") {
-    return false;
-  }
-
-  const query = state.query.trim().toLowerCase();
-  if (!query) {
-    return true;
-  }
-  return getBlockSearchText(block).includes(query);
-}
-
-function getFilteredBlockIds(page, blockIds, sectionKey) {
-  return blockIds.filter((blockId) => blockMatchesFilters(getBlock(page, blockId, sectionKey)));
-}
-
-function renderEmptyState() {
-  return `
-    <section class="section-block empty-state">
-      <h2 class="section-title">没有匹配的交付块</h2>
-      <p>调整关键词或状态筛选后再查看。</p>
-    </section>
-  `;
-}
-
 function renderCustomEditor(page) {
   if (state.roleId !== "custom") {
     customEditorPanelEl.classList.add("hidden");
@@ -3009,70 +2964,13 @@ function renderHeader(page) {
   `;
 }
 
-function renderToolbar(page, view) {
-  const stats = getDeliveryStats(page, view);
-  const options = [
-    { id: "all", label: `全部 ${stats.total}` },
-    { id: "ready", label: `已配置 ${stats.ready}` },
-    { id: "missing", label: `缺失 ${stats.missing}` },
-  ];
-
-  viewToolbarEl.innerHTML = `
-    <div class="toolbar-main">
-      <label class="search-field">
-        <span>搜索交付块</span>
-        <input id="block-search-input" type="search" value="${escapeHtml(state.query)}" placeholder="标题、字段、规则、验收标准">
-      </label>
-      <div class="status-filter" role="group" aria-label="交付块状态筛选">
-        ${options
-          .map(
-            (option) => `
-              <button
-                type="button"
-                class="filter-btn ${state.statusFilter === option.id ? "active" : ""}"
-                data-status-filter="${escapeHtml(option.id)}"
-              >
-                ${escapeHtml(option.label)}
-              </button>
-            `
-          )
-          .join("")}
-      </div>
-    </div>
-    <p class="toolbar-hint">${escapeHtml(page.name)} · ${escapeHtml(getRoleLabel(state.roleId))} · 当前筛选只影响主内容区展示</p>
-  `;
-
-  const input = document.getElementById("block-search-input");
-  input?.addEventListener("input", () => {
-    state.query = input.value;
-    render();
-    document.getElementById("block-search-input")?.focus();
-  });
-
-  viewToolbarEl.querySelectorAll("button[data-status-filter]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const statusFilter = button.dataset.statusFilter;
-      if (!statusFilter || statusFilter === state.statusFilter) {
-        return;
-      }
-      state.statusFilter = statusFilter;
-      render();
-    });
-  });
-}
-
 function renderMain(page, view) {
   fieldTableRegistry.clear();
   const sections = [
     renderSummary(page),
     ...SECTION_META.map((section) => renderSection(page, view, section)),
   ].join("");
-  const hasFilteredContent = SECTION_META.some((section) => {
-    const blockIds = Array.isArray(view[section.key]) ? view[section.key] : [];
-    return getFilteredBlockIds(page, blockIds, section.key).length > 0;
-  });
-  const shouldShowEmpty = !hasFilteredContent && (state.query.trim() || state.statusFilter !== "all");
-  mainSectionsEl.innerHTML = shouldShowEmpty ? renderSummary(page) + renderEmptyState() : sections;
+  mainSectionsEl.innerHTML = sections;
 }
 
 function renderProjectOverview() {
@@ -3501,12 +3399,11 @@ function render() {
   }
 
   rolePanelEl.classList.remove("hidden");
-  viewToolbarEl.classList.remove("hidden");
+  viewToolbarEl.classList.add("hidden");
   const page = getCurrentPage();
   const view = getCurrentView(page);
   renderInPageNav(page, view);
   renderHeader(page);
-  renderToolbar(page, view);
   renderMain(page, view);
   renderCustomEditor(page);
 }
